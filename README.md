@@ -4,6 +4,7 @@
 ![](https://raw.githubusercontent.com/Ccapton/DragView/master/dragview_demo.gif)
 
 ### 特性
+- 可放置在任意类型的父布局中
 - 可贴合父类布局的四个边界
 - 可设置触发贴合的距离
 
