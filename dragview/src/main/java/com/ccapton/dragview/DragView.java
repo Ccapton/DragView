@@ -14,6 +14,11 @@ public class DragView extends RelativeLayout {
     protected int circleRadius;
     protected int ciccleColor;
 
+    private boolean leftAlign = true;
+    private boolean rightAlign = true;
+    private boolean topAlign = true;
+    private boolean bottomAlign = true;
+
     public DragView(Context context) {
         this(context,null);
     }
@@ -91,6 +96,24 @@ public class DragView extends RelativeLayout {
                         t = ((ViewGroup)getParent()).getHeight() - getHeight();
                     }
                     this.layout(l,t,r,b);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (getX() <= dp2px(40)) {
+                    if (leftAlign)
+                        this.layout(0, (int) getY(), getWidth(), (int) getY() + getHeight());
+                }
+                else if (getX() + getWidth() >= ((ViewGroup)getParent()).getWidth() - dp2px(40)) {
+                        if (rightAlign)
+                            this.layout(((ViewGroup) getParent()).getWidth() - getWidth(), (int) getY(), ((ViewGroup) getParent()).getWidth(), (int) getY() + getHeight());
+                    }
+                if (getY() <= dp2px(40)) {
+                    if (topAlign)
+                        this.layout((int) getX(), 0, (int) getX() + getWidth(), getHeight());
+                }
+                else if ( getY() + getHeight() >= ((ViewGroup)getParent()).getHeight() - dp2px(40)) {
+                    if (bottomAlign)
+                        this.layout((int) getX(), ((ViewGroup) getParent()).getHeight() - getHeight(), (int) getX() + getWidth(), ((ViewGroup) getParent()).getHeight());
                 }
                 break;
         }
