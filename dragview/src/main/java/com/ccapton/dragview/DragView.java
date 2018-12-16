@@ -5,19 +5,76 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 public class DragView extends RelativeLayout {
 
-    protected final int DEFAULT_CIRCLERADIUS = 0;
-    protected int circleRadius;
-    protected int ciccleColor;
+
+    private int defaultAlignDistance = 40;
+
+    private float alignDistance ;
 
     private boolean leftAlign = true;
     private boolean rightAlign = true;
     private boolean topAlign = true;
     private boolean bottomAlign = true;
+
+    private OnDragViewClickListener onDragViewClickListener;
+
+
+    public  interface OnDragViewClickListener{
+        void onDragViewClick(View view);
+    }
+
+    public float getAlignDistance() {
+        return alignDistance;
+    }
+
+    public void setAlignDistance(float alignDistance) {
+        this.alignDistance = alignDistance;
+    }
+
+    public boolean isLeftAlign() {
+        return leftAlign;
+    }
+
+    public void setLeftAlign(boolean leftAlign) {
+        this.leftAlign = leftAlign;
+    }
+
+    public boolean isRightAlign() {
+        return rightAlign;
+    }
+
+    public void setRightAlign(boolean rightAlign) {
+        this.rightAlign = rightAlign;
+    }
+
+    public boolean isTopAlign() {
+        return topAlign;
+    }
+
+    public void setTopAlign(boolean topAlign) {
+        this.topAlign = topAlign;
+    }
+
+    public boolean isBottomAlign() {
+        return bottomAlign;
+    }
+
+    public void setBottomAlign(boolean bottomAlign) {
+        this.bottomAlign = bottomAlign;
+    }
+
+    public OnDragViewClickListener getOnDragViewClickListener() {
+        return onDragViewClickListener;
+    }
+
+    public void setOnDragViewClickListener(OnDragViewClickListener onDragViewClickListener) {
+        this.onDragViewClickListener = onDragViewClickListener;
+    }
 
     public DragView(Context context) {
         this(context,null);
@@ -39,10 +96,12 @@ public class DragView extends RelativeLayout {
     public void setupStyleable(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DragView);
 
-        circleRadius = (int) typedArray.getDimension(R.styleable.DragView_circleRadius, dp2px(DEFAULT_CIRCLERADIUS));
+        leftAlign = typedArray.getBoolean(R.styleable.DragView_leftAlign,true);
+        rightAlign = typedArray.getBoolean(R.styleable.DragView_rightAlign,true);
+        topAlign = typedArray.getBoolean(R.styleable.DragView_topAlign,true);
+        bottomAlign = typedArray.getBoolean(R.styleable.DragView_bottomAlign,true);
 
-        int circleColorDefault = context.getResources().getColor(R.color.circle_color_default);
-        ciccleColor = typedArray.getColor(R.styleable.DragView_circleColor, circleColorDefault);
+        alignDistance = typedArray.getDimension(R.styleable.DragView_alignDistance,defaultAlignDistance);
 
         typedArray.recycle();
 
@@ -53,23 +112,21 @@ public class DragView extends RelativeLayout {
         return Math.round(dp * (displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        return ev.getAction() != MotionEvent.ACTION_DOWN;
-//    }
-
     private float oldX,oldY;
 
+    private int pressCount = 0;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                pressCount ++;
                 oldX = event.getX();
                 oldY = event.getY();
-                break;
+                return  super.onTouchEvent(event);
             case MotionEvent.ACTION_MOVE:
+                pressCount ++;
                 float distanceX =  event.getX() - oldX;
                 float distanceY =  event.getY() - oldY;
                 if (Math.abs(distanceX) >= 5 || Math.abs(distanceY) >= 5)
@@ -78,8 +135,6 @@ public class DragView extends RelativeLayout {
                     int t = (int) (getTop() + distanceY);
                     int r = l + getWidth();
                     int b = t + getHeight();
-
-
 
                     if (l <= 0){
                         l = 0;
@@ -98,20 +153,26 @@ public class DragView extends RelativeLayout {
                     this.layout(l,t,r,b);
                 }
                 break;
+
             case MotionEvent.ACTION_UP:
-                if (getX() <= dp2px(40)) {
+                if (pressCount == 1) {
+                    if (this.onDragViewClickListener != null)
+                        this.onDragViewClickListener.onDragViewClick(this);
+                }
+                pressCount = 0;
+
+                if (getX() <= alignDistance) {
                     if (leftAlign)
                         this.layout(0, (int) getY(), getWidth(), (int) getY() + getHeight());
+                } else if (getX() + getWidth() >= ((ViewGroup)getParent()).getWidth() - alignDistance) {
+                    if (rightAlign)
+                        this.layout(((ViewGroup) getParent()).getWidth() - getWidth(), (int) getY(), ((ViewGroup) getParent()).getWidth(), (int) getY() + getHeight());
                 }
-                else if (getX() + getWidth() >= ((ViewGroup)getParent()).getWidth() - dp2px(40)) {
-                        if (rightAlign)
-                            this.layout(((ViewGroup) getParent()).getWidth() - getWidth(), (int) getY(), ((ViewGroup) getParent()).getWidth(), (int) getY() + getHeight());
-                    }
-                if (getY() <= dp2px(40)) {
+                if (getY() <= alignDistance) {
                     if (topAlign)
                         this.layout((int) getX(), 0, (int) getX() + getWidth(), getHeight());
                 }
-                else if ( getY() + getHeight() >= ((ViewGroup)getParent()).getHeight() - dp2px(40)) {
+                else if ( getY() + getHeight() >= ((ViewGroup)getParent()).getHeight() - alignDistance) {
                     if (bottomAlign)
                         this.layout((int) getX(), ((ViewGroup) getParent()).getHeight() - getHeight(), (int) getX() + getWidth(), ((ViewGroup) getParent()).getHeight());
                 }

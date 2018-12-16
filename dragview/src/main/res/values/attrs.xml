@@ -2,8 +2,11 @@
 <resources>
 
     <declare-styleable name="DragView">
-        <attr name="circleRadius" format="dimension" />
-        <attr name="circleColor" format="color" />
+        <attr name="leftAlign" format="boolean" />
+        <attr name="rightAlign" format="boolean" />
+        <attr name="topAlign" format="boolean" />
+        <attr name="bottomAlign" format="boolean" />
+        <attr name="alignDistance" format="dimension" />
     </declare-styleable>
 
 </resources>

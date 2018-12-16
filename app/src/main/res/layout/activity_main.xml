@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,32 +8,40 @@
 
         <com.ccapton.dragview.DragView
             android:id="@+id/dragview"
-            android:background="@color/colorAccent"
-            android:layout_width="100dp"
-            android:layout_height="100dp">
+            app:alignDistance="45dp"
+            app:bottomAlign="true"
+            app:topAlign="true"
+            app:leftAlign="true"
+            app:rightAlign="true"
+            android:layout_width="80dp"
+            android:layout_height="80dp">
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_centerInParent="true"
+            <android.support.v7.widget.CardView
+                android:layout_centerInParent="true"
+                app:cardCornerRadius="15dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp">
+
+                <ImageView
+                    android:background="@drawable/shape_rect"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                        <TextView
-                            android:textColor="#fff"
-                            android:gravity="center"
-                            android:text="DragView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                    android:layout_height="match_parent" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:layout_centerInParent="true"
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp" />
+                </RelativeLayout>
 
-                        <ImageView
-                            android:src="@mipmap/ic_launcher_round"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp" />
-                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
         </com.ccapton.dragview.DragView>
 
 
 
 
-</RelativeLayout>
+</FrameLayout>
