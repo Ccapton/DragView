@@ -1,5 +1,5 @@
 # DragView
-可拖拽的view,继承自RelativeLayout
+可拖拽的view,继承自RelativeLayout。A draggable viewgroup which is a child of RelativeLayout.
 
 ![](https://raw.githubusercontent.com/Ccapton/DragView/master/dragview_demo.gif)
 
